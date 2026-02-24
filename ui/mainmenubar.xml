@@ -510,13 +510,13 @@
      <attribute name="label" translatable="yes">_Pen</attribute>
      <attribute name="action">win.select-tool</attribute>
      <attribute name="target" type="t">1</attribute> <!-- TOOL_PEN -->
-     <attribute name="accel">&lt;Ctrl&gt;&lt;Shift&gt;p</attribute>
+     <attribute name="accel">&lt;Alt&gt;d</attribute>
     </item>
     <item>
      <attribute name="label" translatable="yes">_Eraser</attribute>
      <attribute name="action">win.select-tool</attribute>
      <attribute name="target" type="t">2</attribute> <!-- TOOL_ERASER -->
-     <attribute name="accel">&lt;Ctrl&gt;&lt;Shift&gt;e</attribute>
+     <attribute name="accel">&lt;Alt&gt;e</attribute>
     </item>
     <item>
      <attribute name="label" translatable="yes">Select Linear Text</attribute>
@@ -534,13 +534,13 @@
      <attribute name="label" translatable="yes">_Highlighter</attribute>
      <attribute name="action">win.select-tool</attribute>
      <attribute name="target" type="t">3</attribute> <!-- TOOL_HIGHLIGHTER -->
-     <attribute name="accel">&lt;Ctrl&gt;&lt;Shift&gt;h</attribute>
+     <attribute name="accel">&lt;Alt&gt;h</attribute>
     </item>
     <item>
      <attribute name="label" translatable="yes">_Text</attribute>
      <attribute name="action">win.select-tool</attribute>
      <attribute name="target" type="t">4</attribute> <!-- TOOL_TEXT -->
-     <attribute name="accel">&lt;Ctrl&gt;&lt;Shift&gt;t</attribute>
+     <attribute name="accel">&lt;Alt&gt;t</attribute>
     </item>
     <item>
      <attribute name="label" translatable="yes">_Image</attribute>
@@ -565,17 +565,17 @@
      <item>
       <attribute name="label" translatable="yes">Draw Rectangle</attribute>
       <attribute name="action">win.tool-draw-rectangle</attribute>
-      <attribute name="accel">&lt;Ctrl&gt;2</attribute>
+      <attribute name="accel">&lt;Alt&gt;r</attribute>
      </item>
      <item>
       <attribute name="label" translatable="yes">Draw Ellipse</attribute>
       <attribute name="action">win.tool-draw-ellipse</attribute>
-      <attribute name="accel">&lt;Ctrl&gt;3</attribute>
+      <attribute name="accel">&lt;Alt&gt;o</attribute>
      </item>
      <item>
       <attribute name="label" translatable="yes">Draw Arrow</attribute>
       <attribute name="action">win.tool-draw-arrow</attribute>
-      <attribute name="accel">&lt;Ctrl&gt;4</attribute>
+      <attribute name="accel">&lt;Alt&gt;a</attribute>
      </item>
      <item>
       <attribute name="label" translatable="yes">Draw Double Arrow</attribute>
@@ -590,12 +590,12 @@
      <item>
       <attribute name="label" translatable="yes">Draw _Line</attribute>
       <attribute name="action">win.tool-draw-line</attribute>
-      <attribute name="accel">&lt;Ctrl&gt;7</attribute>
+      <attribute name="accel">&lt;Alt&gt;l</attribute>
      </item>
      <item>
       <attribute name="label" translatable="yes">Draw Spline</attribute>
       <attribute name="action">win.tool-draw-spline</attribute>
-      <attribute name="accel">&lt;Ctrl&gt;8</attribute>
+      <attribute name="accel">&lt;Alt&gt;s</attribute>
      </item>
     </submenu>
    </section>
@@ -626,13 +626,13 @@
      <attribute name="label" translatable="yes">Select Object</attribute>
      <attribute name="action">win.select-tool</attribute>
      <attribute name="target" type="t">10</attribute> <!-- TOOL_SELECT_OBJECT -->
-     <attribute name="accel">&lt;Ctrl&gt;&lt;Shift&gt;o</attribute>
+     <attribute name="accel">&lt;Ctrl&gt;&lt;Alt&gt;a</attribute>
     </item>
     <item>
      <attribute name="label" translatable="yes">_Vertical Space</attribute>
      <attribute name="action">win.select-tool</attribute>
      <attribute name="target" type="t">12</attribute> <!-- TOOL_VERTICAL_SPACE -->
-     <attribute name="accel">&lt;Ctrl&gt;&lt;Shift&gt;v</attribute>
+     <attribute name="accel">&lt;Alt&gt;v</attribute>
     </item>
     <item>
      <attribute name="label" translatable="yes">Play Object</attribute>
@@ -644,7 +644,7 @@
      <attribute name="label" translatable="yes">H_and Tool</attribute>
      <attribute name="action">win.select-tool</attribute>
      <attribute name="target" type="t">13</attribute> <!-- TOOL_HAND -->
-     <attribute name="accel">&lt;Ctrl&gt;&lt;Shift&gt;a</attribute>
+     <attribute name="accel">&lt;Alt&gt;g</attribute>
     </item>
     <item>
      <attribute name="label" translatable="yes">Setsquare</attribute>
