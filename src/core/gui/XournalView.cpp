@@ -25,6 +25,7 @@
 #include "gui/inputdevices/GeometryToolInputHandler.h"  // for GeometryToolInputHandler
 #include "gui/inputdevices/HandRecognition.h"    // for HandRecognition
 #include "gui/inputdevices/InputContext.h"       // for InputContext
+#include "gui/scroll/ScrollHandling.h"           // for ScrollHandling
 #include "gui/toolbarMenubar/ColorToolItem.h"    // for ColorToolItem
 #include "gui/toolbarMenubar/ToolMenuHandler.h"  // for ToolMenuHandler
 #include "gui/widgets/XournalWidget.h"           // for gtk_xournal_get_layout
@@ -65,16 +66,16 @@ std::pair<size_t, size_t> XournalView::preloadPageBounds(size_t page, size_t max
 XournalView::XournalView(GtkWidget* parent, Control* control, ScrollHandling* scrollHandling):
         scrollHandling(scrollHandling), control(control) {
     Document* doc = control->getDocument();
-    doc->lock();
+    doc->lock_shared();
     if (doc->getPdfPageCount() != 0) {
         this->cache = std::make_unique<PdfCache>(doc->getPdfDocument(), control->getSettings());
     }
-    doc->unlock();
+    doc->unlock_shared();
 
     registerListener(control);
 
     InputContext* inputContext = new InputContext(this, scrollHandling);
-    this->widget = gtk_xournal_new(this, inputContext);
+    this->widget = gtk_xournal_new(this, inputContext, scrollHandling->getVertical(), scrollHandling->getHorizontal());
     g_object_ref_sink(this->widget);  // take ownership without increasing the ref count
 
     gtk_container_add(GTK_CONTAINER(parent), this->widget);
@@ -376,13 +377,6 @@ void XournalView::pageSelected(size_t page) {
         return;
     }
 
-    Document* doc = control->getDocument();
-    doc->lock();
-    auto const& file = doc->getEvMetadataFilename();
-    doc->unlock();
-
-    control->getMetadataManager()->storeMetadata(file, static_cast<int>(page), getZoom());
-
     control->getWindow()->getPdfToolbox()->userCancelSelection();
 
     if (this->lastSelectedPage != npos && this->lastSelectedPage < this->viewPages.size()) {
@@ -497,11 +491,6 @@ void XournalView::getPasteTarget(double& x, double& y) const {
     }
 }
 
-/**
- * Return the rectangle which is visible on screen, in document cooordinates
- *
- * Or nullptr if the page is not visible
- */
 auto XournalView::getVisibleRect(size_t page) const -> Rectangle<double>* {
     if (page == npos || page >= this->viewPages.size()) {
         return nullptr;
@@ -519,11 +508,11 @@ void XournalView::recreatePdfCache() {
     this->cache.reset();
 
     Document* doc = control->getDocument();
-    doc->lock();
+    doc->lock_shared();
     if (doc->getPdfPageCount() != 0) {
         this->cache = std::make_unique<PdfCache>(doc->getPdfDocument(), control->getSettings());
     }
-    doc->unlock();
+    doc->unlock_shared();
 }
 
 /**
@@ -549,8 +538,6 @@ void XournalView::zoomChanged() {
     ZoomControl* zoom = control->getZoomControl();
     this->getLayout()->recomputeCenteringPadding();
 
-    gtk_widget_queue_resize(getWidget());
-
     if (zoom->isZoomPresentationMode() || zoom->isZoomFitMode()) {
         scrollTo(this->getCurrentPage());
     } else if (zoom->isZoomSequenceActive()) {
@@ -558,13 +545,6 @@ void XournalView::zoomChanged() {
         Layout* layout = this->getLayout();
         layout->scrollAbs(pos.x, pos.y);
     }
-
-    Document* doc = control->getDocument();
-    doc->lock();
-    auto const& file = doc->getEvMetadataFilename();
-    doc->unlock();
-
-    control->getMetadataManager()->storeMetadata(file, static_cast<int>(getCurrentPage()), zoom->getZoomReal());
 
     // Updates the Eraser's cursor icon in order to make it as big as the erasing area
     control->getCursor()->updateCursor();
@@ -574,6 +554,8 @@ void XournalView::zoomChanged() {
     control->getWindow()->getPdfToolbox()->hide();
 
     this->control->getScheduler()->blockRerenderZoom();
+
+    gtk_widget_queue_draw(getWidget());
 }
 
 void XournalView::pageSizeChanged(size_t page) {
@@ -617,9 +599,9 @@ auto XournalView::getCache() const -> PdfCache* { return this->cache.get(); }
 
 void XournalView::pageInserted(size_t page) {
     Document* doc = control->getDocument();
-    doc->lock();
+    doc->lock_shared();
     auto pageView = std::make_unique<XojPageView>(this, doc->getPage(page));
-    doc->unlock();
+    doc->unlock_shared();
 
     viewPages.insert(begin(viewPages) + as_signed(page), std::move(pageView));
 
@@ -763,20 +745,19 @@ void XournalView::documentChanged(DocumentChangeType type) {
 
     clearSelection();
 
-    viewPages.clear();
-
     recreatePdfCache();
 
     Document* doc = control->getDocument();
-    doc->lock();
+    doc->lock_shared();
 
+    viewPages.clear();
     size_t pagecount = doc->getPageCount();
     viewPages.reserve(pagecount);
     for (size_t i = 0; i < pagecount; i++) {
         viewPages.emplace_back(std::make_unique<XojPageView>(this, doc->getPage(i)));
     }
 
-    doc->unlock();
+    doc->unlock_shared();
 
     layoutPages();
     scrollTo(0);
